@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
+/** @property CenterApplicationStatus $status */
 class ProfessionalApplication extends Model
 {
     /** @use HasFactory<ProfessionalApplicationFactory> */
@@ -27,16 +28,22 @@ class ProfessionalApplication extends Model
         ];
     }
 
+    /** @return BelongsTo<ProfessionalProfile, $this> */
+    /** @return BelongsTo<ProfessionalProfile, $this> */
     public function professional(): BelongsTo
     {
         return $this->belongsTo(ProfessionalProfile::class, 'professional_profile_id');
     }
 
+    /** @return BelongsTo<User, $this> */
+    /** @return BelongsTo<User, $this> */
     public function submitter(): BelongsTo
     {
         return $this->belongsTo(User::class, 'submitted_by');
     }
 
+    /** @return MorphMany<ApplicationStatusHistory, $this> */
+    /** @return MorphMany<ApplicationStatusHistory, $this> */
     public function statusHistory(): MorphMany
     {
         return $this->morphMany(ApplicationStatusHistory::class, 'application')->latest();
