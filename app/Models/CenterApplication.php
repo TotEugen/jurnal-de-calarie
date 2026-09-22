@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
+/** @property CenterApplicationStatus $status */
 class CenterApplication extends Model
 {
     /** @use HasFactory<CenterApplicationFactory> */
@@ -28,21 +29,25 @@ class CenterApplication extends Model
         ];
     }
 
+    /** @return BelongsTo<EquestrianCenter, $this> */
     public function center(): BelongsTo
     {
         return $this->belongsTo(EquestrianCenter::class, 'equestrian_center_id');
     }
 
+    /** @return BelongsTo<User, $this> */
     public function submitter(): BelongsTo
     {
         return $this->belongsTo(User::class, 'submitted_by');
     }
 
+    /** @return BelongsTo<User, $this> */
     public function reviewer(): BelongsTo
     {
         return $this->belongsTo(User::class, 'reviewed_by');
     }
 
+    /** @return MorphMany<ApplicationStatusHistory, $this> */
     public function statusHistory(): MorphMany
     {
         return $this->morphMany(ApplicationStatusHistory::class, 'application')->latest();
