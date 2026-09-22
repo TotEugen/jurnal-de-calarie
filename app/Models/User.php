@@ -38,26 +38,31 @@ class User extends Authenticatable implements PasskeyUser
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, PasskeyAuthenticatable, TwoFactorAuthenticatable;
 
+    /** @return BelongsToMany<Role, $this> */
     public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Role::class)->withTimestamps();
     }
 
+    /** @return HasMany<CenterMembership, $this> */
     public function centerMemberships(): HasMany
     {
         return $this->hasMany(CenterMembership::class);
     }
 
+    /** @return HasMany<CenterApplication, $this> */
     public function centerApplications(): HasMany
     {
         return $this->hasMany(CenterApplication::class, 'submitted_by');
     }
 
+    /** @return HasOne<RiderProfile, $this> */
     public function riderProfile(): HasOne
     {
         return $this->hasOne(RiderProfile::class);
     }
 
+    /** @return HasOne<ProfessionalProfile, $this> */
     public function professionalProfile(): HasOne
     {
         return $this->hasOne(ProfessionalProfile::class);

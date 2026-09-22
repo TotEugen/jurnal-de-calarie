@@ -23,21 +23,25 @@ class RiderProfile extends Model
         return ['birth_date' => 'date', 'activated_at' => 'datetime'];
     }
 
+    /** @return BelongsTo<User, $this> */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
+    /** @return HasMany<CenterRiderMembership, $this> */
     public function centerMemberships(): HasMany
     {
         return $this->hasMany(CenterRiderMembership::class);
     }
 
+    /** @return HasMany<RidingActivity, $this> */
     public function activities(): HasMany
     {
         return $this->hasMany(RidingActivity::class);
     }
 
+    /** @return HasMany<GradeAward, $this> */
     public function gradeAwards(): HasMany
     {
         return $this->hasMany(GradeAward::class);

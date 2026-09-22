@@ -25,16 +25,19 @@ class CenterMembership extends Model
         ];
     }
 
+    /** @return BelongsTo<EquestrianCenter, $this> */
     public function center(): BelongsTo
     {
         return $this->belongsTo(EquestrianCenter::class, 'equestrian_center_id');
     }
 
+    /** @return BelongsTo<User, $this> */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
+    /** @return BelongsTo<User, $this> */
     public function validator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'validated_by');
