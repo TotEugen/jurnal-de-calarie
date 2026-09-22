@@ -31,13 +31,11 @@ class EquestrianCenter extends Model
     }
 
     /** @return HasMany<CenterApplication, $this> */
-    /** @return HasMany<CenterApplication, $this> */
     public function applications(): HasMany
     {
         return $this->hasMany(CenterApplication::class);
     }
 
-    /** @return HasMany<CenterMembership, $this> */
     /** @return HasMany<CenterMembership, $this> */
     public function memberships(): HasMany
     {
@@ -45,13 +43,11 @@ class EquestrianCenter extends Model
     }
 
     /** @return HasMany<CenterProfessionalAffiliation, $this> */
-    /** @return HasMany<CenterProfessionalAffiliation, $this> */
     public function professionalAffiliations(): HasMany
     {
         return $this->hasMany(CenterProfessionalAffiliation::class);
     }
 
-    /** @return HasMany<CenterRiderMembership, $this> */
     /** @return HasMany<CenterRiderMembership, $this> */
     public function riderMemberships(): HasMany
     {

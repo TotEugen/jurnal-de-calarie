@@ -30,13 +30,11 @@ class CenterApplication extends Model
     }
 
     /** @return BelongsTo<EquestrianCenter, $this> */
-    /** @return BelongsTo<EquestrianCenter, $this> */
     public function center(): BelongsTo
     {
         return $this->belongsTo(EquestrianCenter::class, 'equestrian_center_id');
     }
 
-    /** @return BelongsTo<User, $this> */
     /** @return BelongsTo<User, $this> */
     public function submitter(): BelongsTo
     {
@@ -44,13 +42,11 @@ class CenterApplication extends Model
     }
 
     /** @return BelongsTo<User, $this> */
-    /** @return BelongsTo<User, $this> */
     public function reviewer(): BelongsTo
     {
         return $this->belongsTo(User::class, 'reviewed_by');
     }
 
-    /** @return MorphMany<ApplicationStatusHistory, $this> */
     /** @return MorphMany<ApplicationStatusHistory, $this> */
     public function statusHistory(): MorphMany
     {

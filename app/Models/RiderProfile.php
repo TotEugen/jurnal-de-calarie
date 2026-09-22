@@ -30,13 +30,11 @@ class RiderProfile extends Model
     }
 
     /** @return BelongsTo<User, $this> */
-    /** @return BelongsTo<User, $this> */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    /** @return HasMany<CenterRiderMembership, $this> */
     /** @return HasMany<CenterRiderMembership, $this> */
     public function centerMemberships(): HasMany
     {
@@ -44,13 +42,11 @@ class RiderProfile extends Model
     }
 
     /** @return HasMany<RidingActivity, $this> */
-    /** @return HasMany<RidingActivity, $this> */
     public function activities(): HasMany
     {
         return $this->hasMany(RidingActivity::class);
     }
 
-    /** @return HasMany<GradeAward, $this> */
     /** @return HasMany<GradeAward, $this> */
     public function gradeAwards(): HasMany
     {

@@ -29,20 +29,17 @@ class ProfessionalApplication extends Model
     }
 
     /** @return BelongsTo<ProfessionalProfile, $this> */
-    /** @return BelongsTo<ProfessionalProfile, $this> */
     public function professional(): BelongsTo
     {
         return $this->belongsTo(ProfessionalProfile::class, 'professional_profile_id');
     }
 
     /** @return BelongsTo<User, $this> */
-    /** @return BelongsTo<User, $this> */
     public function submitter(): BelongsTo
     {
         return $this->belongsTo(User::class, 'submitted_by');
     }
 
-    /** @return MorphMany<ApplicationStatusHistory, $this> */
     /** @return MorphMany<ApplicationStatusHistory, $this> */
     public function statusHistory(): MorphMany
     {

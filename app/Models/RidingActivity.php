@@ -23,20 +23,17 @@ class RidingActivity extends Model
     }
 
     /** @return BelongsTo<RiderProfile, $this> */
-    /** @return BelongsTo<RiderProfile, $this> */
     public function rider(): BelongsTo
     {
         return $this->belongsTo(RiderProfile::class, 'rider_profile_id');
     }
 
     /** @return BelongsTo<EquestrianCenter, $this> */
-    /** @return BelongsTo<EquestrianCenter, $this> */
     public function center(): BelongsTo
     {
         return $this->belongsTo(EquestrianCenter::class, 'equestrian_center_id');
     }
 
-    /** @return BelongsTo<ProfessionalProfile, $this> */
     /** @return BelongsTo<ProfessionalProfile, $this> */
     public function professional(): BelongsTo
     {
