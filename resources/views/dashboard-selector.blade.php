@@ -18,6 +18,9 @@
             @can('access-rider')
                 <a href="{{ route('rider.dashboard') }}" class="bg-white p-7 transition hover:bg-emerald-50 dark:bg-zinc-900 dark:hover:bg-emerald-950" wire:navigate><p class="text-lg font-semibold">Călăreț</p><p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400">Jurnal personal, progres, grade și centre.</p></a>
             @endcan
+            @can('access-guardian')
+                <a href="{{ route('guardian.dashboard') }}" class="bg-white p-7 transition hover:bg-emerald-50 dark:bg-zinc-900 dark:hover:bg-emerald-950" wire:navigate><p class="text-lg font-semibold">Profiluri administrate</p><p class="mt-2 text-sm text-zinc-600 dark:text-zinc-400">Gestionează profilurile călăreților minori aflați în grijă.</p></a>
+            @endcan
         </div>
     </div>
 </x-layouts::app>
