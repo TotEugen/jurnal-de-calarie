@@ -30,21 +30,25 @@ class ProfessionalProfile extends Model
         ];
     }
 
+    /** @return BelongsTo<User, $this> */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
+    /** @return HasMany<CenterProfessionalAffiliation, $this> */
     public function affiliations(): HasMany
     {
         return $this->hasMany(CenterProfessionalAffiliation::class);
     }
 
+    /** @return HasMany<RidingActivity, $this> */
     public function activities(): HasMany
     {
         return $this->hasMany(RidingActivity::class);
     }
 
+    /** @return HasMany<ProfessionalApplication, $this> */
     public function applications(): HasMany
     {
         return $this->hasMany(ProfessionalApplication::class);
