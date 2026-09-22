@@ -1,0 +1,8 @@
+<x-layouts::app title="Panou Călăreț">
+    @php $rider = auth()->user()->riderProfile ?? null; @endphp
+    <div class="mx-auto w-full max-w-7xl space-y-8">
+        <header class="border-b border-zinc-200 pb-6 dark:border-zinc-700"><flux:text class="font-medium text-emerald-700">Călăreț</flux:text><flux:heading size="xl" class="mt-1">Jurnalul meu de călărie</flux:heading><flux:text class="mt-2">Parcurs unic, indiferent de centrul în care desfășori activitatea.</flux:text></header>
+        <section class="grid gap-px overflow-hidden rounded-lg border border-zinc-200 bg-zinc-200 md:grid-cols-3 dark:border-zinc-700 dark:bg-zinc-700"><div class="bg-white p-5 dark:bg-zinc-900"><flux:text>Centre active</flux:text><p class="mt-2 text-2xl font-semibold">{{ $rider?->centerMemberships()->where('status', 'active')->count() ?? 0 }}</p></div><div class="bg-white p-5 dark:bg-zinc-900"><flux:text>Activități</flux:text><p class="mt-2 text-2xl font-semibold">{{ $rider?->activities()->count() ?? 0 }}</p></div><div class="bg-white p-5 dark:bg-zinc-900"><flux:text>Grade obținute</flux:text><p class="mt-2 text-2xl font-semibold">{{ $rider?->gradeAwards()->count() ?? 0 }}</p></div></section>
+        <section class="grid gap-8 border-t border-zinc-200 pt-8 md:grid-cols-3 dark:border-zinc-700"><div><flux:heading size="lg">Parcurs</flux:heading><flux:text class="mt-2">Toate activitățile validate, în ordine cronologică.</flux:text></div><div><flux:heading size="lg">Centre</flux:heading><flux:text class="mt-2">Solicită validarea la un centru nou fără pierderea istoricului.</flux:text></div><div><flux:heading size="lg">Grade și diplome</flux:heading><flux:text class="mt-2">Consultă promovările și documentele emise.</flux:text></div></section>
+    </div>
+</x-layouts::app>
