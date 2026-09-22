@@ -30,21 +30,25 @@ class EquestrianCenter extends Model
         ];
     }
 
+    /** @return HasMany<CenterApplication, $this> */
     public function applications(): HasMany
     {
         return $this->hasMany(CenterApplication::class);
     }
 
+    /** @return HasMany<CenterMembership, $this> */
     public function memberships(): HasMany
     {
         return $this->hasMany(CenterMembership::class);
     }
 
+    /** @return HasMany<CenterProfessionalAffiliation, $this> */
     public function professionalAffiliations(): HasMany
     {
         return $this->hasMany(CenterProfessionalAffiliation::class);
     }
 
+    /** @return HasMany<CenterRiderMembership, $this> */
     public function riderMemberships(): HasMany
     {
         return $this->hasMany(CenterRiderMembership::class);

@@ -22,16 +22,19 @@ class RidingActivity extends Model
         return ['performed_at' => 'datetime', 'competencies' => 'array'];
     }
 
+    /** @return BelongsTo<RiderProfile, $this> */
     public function rider(): BelongsTo
     {
         return $this->belongsTo(RiderProfile::class, 'rider_profile_id');
     }
 
+    /** @return BelongsTo<EquestrianCenter, $this> */
     public function center(): BelongsTo
     {
         return $this->belongsTo(EquestrianCenter::class, 'equestrian_center_id');
     }
 
+    /** @return BelongsTo<ProfessionalProfile, $this> */
     public function professional(): BelongsTo
     {
         return $this->belongsTo(ProfessionalProfile::class, 'professional_profile_id');
