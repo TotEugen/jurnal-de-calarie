@@ -15,12 +15,17 @@ class RiderProfile extends Model
 
     protected $fillable = [
         'user_id', 'first_name', 'last_name', 'birth_date',
-        'national_registry_number', 'status', 'activated_at',
+        'phone', 'self_reported_grade_id', 'national_registry_number', 'status',
+        'data_processing_consent_at', 'activated_at',
     ];
 
     protected function casts(): array
     {
-        return ['birth_date' => 'date', 'activated_at' => 'datetime'];
+        return [
+            'birth_date' => 'date',
+            'data_processing_consent_at' => 'datetime',
+            'activated_at' => 'datetime',
+        ];
     }
 
     public function user(): BelongsTo
