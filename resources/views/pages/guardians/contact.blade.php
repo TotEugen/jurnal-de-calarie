@@ -10,8 +10,8 @@
             @csrf
             @method('PATCH')
 
-            <flux:input name="phone" label="Telefonul călărețului" :value="old('phone', $riderProfile->phone)" type="tel" required autocomplete="tel" />
-            <flux:input name="contact_email" label="Emailul călărețului" :value="old('contact_email', $riderProfile->contact_email)" type="email" required autocomplete="email" />
+            <flux:input name="phone" label="Telefon" :value="old('phone', $riderProfile->phone)" type="tel" required autocomplete="tel" />
+            <flux:input name="contact_email" label="Email" :value="old('contact_email', $riderProfile->contact_email)" type="email" required autocomplete="email" />
 
             <div class="flex justify-end gap-3 border-t border-zinc-200 pt-6 dark:border-zinc-700">
                 <flux:button :href="route('guardian.dashboard')" variant="ghost" wire:navigate>Anulează</flux:button>

@@ -72,9 +72,9 @@
                         </div>
                     </div>
                 </div>
-                <flux:input name="phone" label="Telefonul călărețului" :value="old('phone')" type="tel" x-bind:required="!isMinor()" autocomplete="tel" />
+                <flux:input name="phone" label="Telefon" :value="old('phone')" type="tel" x-bind:required="!isMinor()" autocomplete="tel" />
                 <div class="md:col-span-2">
-                    <flux:input name="email" label="Emailul călărețului" :value="old('email')" type="email" x-bind:required="!isMinor()" autocomplete="email" placeholder="email@exemplu.ro" />
+                    <flux:input name="email" label="Email" :value="old('email')" type="email" x-bind:required="!isMinor()" autocomplete="email" placeholder="email@exemplu.ro" />
                     <div x-show="isMinor()" x-cloak class="mt-3 rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900 dark:border-amber-700 dark:bg-amber-950/50 dark:text-amber-100">
                         Telefonul și emailul călărețului sunt opționale pentru minori. Vor putea fi adăugate ulterior din profil, iar după împlinirea vârstei de 18 ani va fi afișată o atenționare pentru activarea accesului propriu.
                     </div>

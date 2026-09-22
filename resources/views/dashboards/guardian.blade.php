@@ -3,10 +3,13 @@
         $relationships = auth()->user()->guardianRelationships()->with('rider')->get();
     @endphp
     <div class="mx-auto w-full max-w-5xl space-y-8">
-        <header class="border-b border-zinc-200 pb-6 dark:border-zinc-700">
-            <flux:text class="font-medium text-emerald-700 dark:text-emerald-400">Părinte / Tutore</flux:text>
-            <flux:heading size="xl" class="mt-1">Profiluri administrate</flux:heading>
-            <flux:text class="mt-2">Profilurile minorilor rămân separate de contul tău și își păstrează istoricul.</flux:text>
+        <header class="flex flex-col gap-4 border-b border-zinc-200 pb-6 sm:flex-row sm:items-end sm:justify-between dark:border-zinc-700">
+            <div>
+                <flux:text class="font-medium text-emerald-700 dark:text-emerald-400">Părinte / Tutore</flux:text>
+                <flux:heading size="xl" class="mt-1">Profiluri administrate</flux:heading>
+                <flux:text class="mt-2">Profilurile minorilor rămân separate de contul tău și își păstrează istoricul.</flux:text>
+            </div>
+            <flux:button icon="pencil-square" :href="route('profile.edit')" wire:navigate>Editează contul meu</flux:button>
         </header>
 
         <div class="space-y-4">
@@ -22,10 +25,10 @@
                             <p class="mt-1">
                                 {{ $rider->birth_date->age >= 18 ? 'Călărețul a împlinit 18 ani. Adaugă emailul și telefonul personal pentru activarea accesului propriu.' : 'Emailul și telefonul personal pot fi adăugate ulterior în profil.' }}
                             </p>
-                            <flux:button class="mt-3" size="sm" :href="route('guardian.riders.contact.edit', $rider)" wire:navigate>Adaugă datele de contact</flux:button>
+                            <flux:button class="mt-3" size="sm" :href="route('riders.profile.edit', $rider)" wire:navigate>Editează profilul</flux:button>
                         </div>
                     @else
-                        <div class="mt-4 flex justify-end"><flux:button size="sm" variant="ghost" :href="route('guardian.riders.contact.edit', $rider)" wire:navigate>Editează datele de contact</flux:button></div>
+                        <div class="mt-4 flex justify-end"><flux:button size="sm" variant="ghost" :href="route('riders.profile.edit', $rider)" wire:navigate>Editează profilul</flux:button></div>
                     @endif
                 </article>
             @endforeach

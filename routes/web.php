@@ -21,10 +21,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('monitor/panou', 'dashboards.monitor')->middleware('can:access-monitor')->name('monitor.dashboard');
     Route::view('calaret/panou', 'dashboards.rider')->middleware('can:access-rider')->name('rider.dashboard');
     Route::view('tutore/panou', 'dashboards.guardian')->middleware('can:access-guardian')->name('guardian.dashboard');
-    Route::get('tutore/calareti/{riderProfile}/contact', [ManagedRiderContactController::class, 'edit'])
-        ->name('guardian.riders.contact.edit');
-    Route::patch('tutore/calareti/{riderProfile}/contact', [ManagedRiderContactController::class, 'update'])
-        ->name('guardian.riders.contact.update');
+    Route::get('calareti/{riderProfile}/profil', [ManagedRiderContactController::class, 'edit'])
+        ->name('riders.profile.edit');
+    Route::patch('calareti/{riderProfile}/profil', [ManagedRiderContactController::class, 'update'])
+        ->name('riders.profile.update');
 });
 
 require __DIR__.'/settings.php';
