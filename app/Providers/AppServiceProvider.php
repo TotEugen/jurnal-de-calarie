@@ -28,6 +28,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('access-center', fn ($user): bool => $user->hasRole('center'));
         Gate::define('access-monitor', fn ($user): bool => $user->hasRole('monitor'));
         Gate::define('access-rider', fn ($user): bool => $user->hasRole('rider'));
+        Gate::define('access-guardian', fn ($user): bool => $user->hasRole('guardian'));
         $this->configureDefaults();
     }
 

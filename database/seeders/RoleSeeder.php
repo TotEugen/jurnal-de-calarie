@@ -14,6 +14,7 @@ class RoleSeeder extends Seeder
     {
         $roles = [
             'rider' => 'Călăreț',
+            'guardian' => 'Părinte / Tutore',
             'monitor' => 'Monitor',
             'center' => 'Centru de echitație',
             'federation' => 'Federație',

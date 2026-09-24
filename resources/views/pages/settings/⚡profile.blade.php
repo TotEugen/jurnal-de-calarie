@@ -117,6 +117,16 @@ new #[Title('Profile settings')] class extends Component {
             </div>
         </form>
 
+        @if (auth()->user()->riderProfile)
+            <div class="mt-8 border-t border-zinc-200 pt-6 dark:border-zinc-700">
+                <flux:heading size="lg">Profil de călăreț</flux:heading>
+                <flux:text class="mt-2">Editează datele personale asociate jurnalului tău de călărie.</flux:text>
+                <flux:button class="mt-4" :href="route('riders.profile.edit', auth()->user()->riderProfile)" wire:navigate>
+                    Editează profilul de călăreț
+                </flux:button>
+            </div>
+        @endif
+
         @if ($this->showDeleteUser)
             <livewire:pages::settings.delete-user-form />
         @endif

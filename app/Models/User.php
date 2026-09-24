@@ -68,6 +68,12 @@ class User extends Authenticatable implements PasskeyUser
         return $this->hasOne(ProfessionalProfile::class);
     }
 
+    /** @return HasMany<GuardianRelationship, $this> */
+    public function guardianRelationships(): HasMany
+    {
+        return $this->hasMany(GuardianRelationship::class, 'guardian_user_id');
+    }
+
     public function hasRole(string $code): bool
     {
         return $this->roles()->where('code', $code)->exists();

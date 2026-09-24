@@ -5,7 +5,7 @@
                 <p class="font-medium text-emerald-700 dark:text-emerald-400">Federația Română de Turism Ecvestru</p>
                 <h1 class="mt-4 max-w-4xl text-5xl font-semibold leading-tight text-zinc-900 md:text-6xl dark:text-white">Jurnal de Călărie</h1>
                 <p class="mt-6 max-w-2xl text-lg leading-8 text-zinc-600 dark:text-zinc-300">Parcursul ecvestru al călărețului, validat de centre și monitori autorizați, într-un registru digital unic.</p>
-                <div class="mt-8 flex flex-wrap gap-3"><flux:button :href="route('register')" variant="primary">Creează cont de călăreț</flux:button><flux:button :href="route('login')">Autentificare</flux:button></div>
+                <div class="mt-8 flex flex-wrap gap-3"><flux:button :href="route('register')" variant="primary">Creează cont călăreț</flux:button><flux:button :href="route('login')">Autentificare</flux:button></div>
             </div>
             <div class="flex justify-center lg:justify-end"><img src="/images/logo-frte.png" alt="FRTE" class="w-full max-w-xs object-contain" /></div>
         </section>

@@ -26,6 +26,16 @@ class DashboardTest extends TestCase
         $response->assertOk();
     }
 
+    public function test_account_sidebar_links_back_to_the_homepage(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->get(route('profile.edit'))
+            ->assertOk()
+            ->assertSee(route('home'), escape: false);
+    }
+
     public function test_public_application_forms_are_visible_to_guests(): void
     {
         $this->get(route('centers.apply'))->assertOk();
@@ -49,5 +59,18 @@ class DashboardTest extends TestCase
         $this->get(route('center.dashboard'))->assertOk();
         $this->get(route('monitor.dashboard'))->assertOk();
         $this->get(route('rider.dashboard'))->assertOk();
+    }
+
+    public function test_a_guardian_dashboard_links_to_account_editing(): void
+    {
+        $user = User::factory()->create();
+        $guardianRole = Role::query()->create(['code' => 'guardian', 'name' => 'Părinte / Tutore']);
+        $user->roles()->attach($guardianRole);
+
+        $this->actingAs($user)
+            ->get(route('guardian.dashboard'))
+            ->assertOk()
+            ->assertSee('Editează contul meu')
+            ->assertSee(route('profile.edit'), escape: false);
     }
 }
