@@ -29,6 +29,7 @@ class CreateNewUser implements CreatesNewUsers
         $isMinor = isset($input['birth_date'])
             && strtotime($input['birth_date']) !== false
             && Carbon::parse($input['birth_date'])->age < 18;
+        $hadPhysicalJournal = filter_var($input['had_physical_journal'] ?? false, FILTER_VALIDATE_BOOL);
 
         Validator::make($input, [
             'first_name' => ['required', 'string', 'max:255'],
@@ -46,6 +47,11 @@ class CreateNewUser implements CreatesNewUsers
             ],
             'password' => $this->passwordRules(),
             'had_physical_journal' => ['nullable', 'boolean'],
+            'physical_journal_issuing_center' => [Rule::requiredIf($hadPhysicalJournal), 'nullable', 'string', Rule::in(config('frte.affiliated_centers'))],
+            'physical_journal_series' => [Rule::requiredIf($hadPhysicalJournal), 'nullable', 'string', 'max:100'],
+            'physical_journal_rider_code' => [Rule::requiredIf($hadPhysicalJournal), 'nullable', 'string', 'max:100'],
+            'emergency_contact_name' => ['required', 'string', 'max:255'],
+            'emergency_contact_phone' => ['required', 'string', 'max:30'],
             'guardian_first_name' => [Rule::requiredIf($isMinor), 'nullable', 'string', 'max:255'],
             'guardian_last_name' => [Rule::requiredIf($isMinor), 'nullable', 'string', 'max:255'],
             'guardian_age' => [Rule::requiredIf($isMinor), 'nullable', 'integer', 'between:18,120'],
@@ -61,14 +67,14 @@ class CreateNewUser implements CreatesNewUsers
 
         if ($existingGuardian && ! Hash::check($input['password'], $existingGuardian->password)) {
             throw ValidationException::withMessages([
-                'password' => 'Emailul părintelui este deja înregistrat. Introdu parola contului existent.',
+                'password' => 'Emailul parintelui este deja inregistrat. Introdu parola contului existent.',
             ]);
         }
 
         return DB::transaction(function () use ($existingGuardian, $input, $isMinor): User {
             $riderRole = Role::query()->firstOrCreate(
                 ['code' => 'rider'],
-                ['name' => 'Călăreț'],
+                ['name' => 'Calaret'],
             );
 
             if (! $isMinor) {
@@ -88,7 +94,7 @@ class CreateNewUser implements CreatesNewUsers
 
                 $guardianRole = Role::query()->firstOrCreate(
                     ['code' => 'guardian'],
-                    ['name' => 'Părinte / Tutore'],
+                    ['name' => 'Parinte / Tutore'],
                 );
 
                 $accountUser->roles()->syncWithoutDetaching([$guardianRole->id]);
@@ -103,6 +109,11 @@ class CreateNewUser implements CreatesNewUsers
                 'contact_email' => $input['email'] ?? null,
                 'data_processing_consent_at' => now(),
                 'had_physical_journal' => (bool) ($input['had_physical_journal'] ?? false),
+                'physical_journal_issuing_center' => $input['physical_journal_issuing_center'] ?? null,
+                'physical_journal_series' => $input['physical_journal_series'] ?? null,
+                'physical_journal_rider_code' => $input['physical_journal_rider_code'] ?? null,
+                'emergency_contact_name' => $input['emergency_contact_name'] ?? null,
+                'emergency_contact_phone' => $input['emergency_contact_phone'] ?? null,
             ]);
 
             if ($isMinor) {

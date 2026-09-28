@@ -17,13 +17,14 @@ class CenterApplication extends Model
 
     protected $fillable = [
         'equestrian_center_id', 'submitted_by', 'reviewed_by', 'status',
-        'revision', 'applicant_notes', 'review_notes', 'submitted_at', 'reviewed_at',
+        'revision', 'applicant_notes', 'questionnaire_answers', 'review_notes', 'submitted_at', 'reviewed_at',
     ];
 
     protected function casts(): array
     {
         return [
             'status' => CenterApplicationStatus::class,
+            'questionnaire_answers' => 'array',
             'submitted_at' => 'datetime',
             'reviewed_at' => 'datetime',
         ];

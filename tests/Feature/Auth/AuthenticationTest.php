@@ -15,7 +15,34 @@ class AuthenticationTest extends TestCase
     {
         $response = $this->get(route('login'));
 
-        $response->assertOk();
+        $response->assertOk()
+            ->assertSee(route('account.choose'), escape: false);
+    }
+
+    public function test_authentication_portal_lists_all_account_types(): void
+    {
+        $this->get(route('account.choose'))
+            ->assertOk()
+            ->assertSee('Alege tipul contului')
+            ->assertSee('Calaret')
+            ->assertSee('Tutore / Parinte')
+            ->assertSee('Centru')
+            ->assertSee('Monitor')
+            ->assertSee('Admin')
+            ->assertSee('Creeaza cont calaret')
+            ->assertSee('Creeaza cont tutore')
+            ->assertSee('Creeaza cont centru')
+            ->assertSee('Creeaza cont monitor')
+            ->assertSee('Ai deja cont?')
+            ->assertSee(route('login'), escape: false);
+
+        $this->get(route('login', ['role' => 'guardian']))
+            ->assertOk()
+            ->assertSee('Autentificare tutore / parinte');
+
+        $this->get(route('home'))
+            ->assertSee(route('account.choose'), escape: false)
+            ->assertSee(route('login'), escape: false);
     }
 
     public function test_users_can_authenticate_using_the_login_screen(): void
@@ -29,7 +56,7 @@ class AuthenticationTest extends TestCase
 
         $response
             ->assertSessionHasNoErrors()
-            ->assertRedirect(route('dashboard', absolute: false));
+            ->assertRedirect(route('home'));
 
         $this->assertAuthenticated();
     }

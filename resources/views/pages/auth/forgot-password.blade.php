@@ -1,31 +1,34 @@
-<x-layouts::auth :title="__('Forgot password')">
+<x-layouts::auth title="Recupereaza contul">
     <div class="flex flex-col gap-6">
-        <x-auth-header :title="__('Forgot password')" :description="__('Enter your email to receive a password reset link')" />
+        <x-auth-header title="Ai uitat parola?" description="Introdu adresa de email pentru a primi codul de recuperare." />
 
         <!-- Session Status -->
         <x-auth-session-status class="text-center" :status="session('status')" />
 
-        <form method="POST" action="{{ route('password.email') }}" class="flex flex-col gap-6">
+        <form method="POST" action="{{ route('recovery.send') }}" class="flex flex-col gap-6">
             @csrf
 
-            <!-- Email Address -->
             <flux:input
                 name="email"
-                :label="__('Email address')"
+                label="Email"
                 type="email"
                 required
                 autofocus
-                placeholder="email@example.com"
+                autocomplete="email"
+                placeholder="email@exemplu.ro"
+                :value="old('email')"
             />
+            @error('email')
+                <div class="rounded-xl border border-red-300 bg-red-50 p-3 text-sm font-medium text-red-800 dark:border-red-800 dark:bg-red-950 dark:text-red-100">{{ $message }}</div>
+            @enderror
 
-            <flux:button variant="primary" type="submit" class="w-full" data-test="email-password-reset-link-button">
-                {{ __('Email password reset link') }}
+            <flux:button variant="primary" type="submit" class="w-full">
+                Trimite codul
             </flux:button>
         </form>
 
         <div class="space-x-1 rtl:space-x-reverse text-center text-sm text-zinc-400">
-            <span>{{ __('Or, return to') }}</span>
-            <flux:link :href="route('login')" wire:navigate>{{ __('log in') }}</flux:link>
+            <flux:link :href="route('login')" wire:navigate>Inapoi la autentificare</flux:link>
         </div>
     </div>
 </x-layouts::auth>

@@ -23,9 +23,6 @@ class SecurityTest extends TestCase
             'confirm' => true,
             'confirmPassword' => true,
         ]);
-        Features::passkeys([
-            'confirmPassword' => true,
-        ]);
     }
 
     public function test_security_settings_page_can_be_rendered(): void
@@ -38,10 +35,7 @@ class SecurityTest extends TestCase
 
         $response->assertOk();
 
-        $response->assertSee('Passkeys');
-        $response->assertSee('No passkeys yet');
-        $response->assertSee('Two-factor authentication');
-        $response->assertSee('Enable 2FA');
+        $response->assertSee('Schimba parola');
     }
 
     public function test_security_settings_page_requires_password_confirmation_when_enabled(): void
@@ -64,9 +58,7 @@ class SecurityTest extends TestCase
             ->withSession(['auth.password_confirmed_at' => time()])
             ->get(route('security.edit'))
             ->assertOk()
-            ->assertSee('Update password')
-            ->assertDontSee('Manage your passkeys for passwordless sign-in')
-            ->assertDontSee('Add a passkey to sign in without a password')
+            ->assertSee('Schimba parola')
             ->assertDontSee('Two-factor authentication');
     }
 
@@ -100,9 +92,9 @@ class SecurityTest extends TestCase
         ]);
 
         $this->actingAs($user);
+        session()->put('auth.password_confirmed_at', time());
 
         $response = Livewire::test('pages::settings.security')
-            ->set('current_password', 'password')
             ->set('password', 'new-password')
             ->set('password_confirmation', 'new-password')
             ->call('updatePassword');
@@ -112,7 +104,7 @@ class SecurityTest extends TestCase
         $this->assertTrue(Hash::check('new-password', $user->refresh()->password));
     }
 
-    public function test_correct_password_must_be_provided_to_update_password(): void
+    public function test_recent_password_confirmation_is_required_to_update_password(): void
     {
         $user = User::factory()->create([
             'password' => Hash::make('password'),
@@ -121,11 +113,10 @@ class SecurityTest extends TestCase
         $this->actingAs($user);
 
         $response = Livewire::test('pages::settings.security')
-            ->set('current_password', 'wrong-password')
             ->set('password', 'new-password')
             ->set('password_confirmation', 'new-password')
             ->call('updatePassword');
 
-        $response->assertHasErrors(['current_password']);
+        $response->assertHasErrors(['password']);
     }
 }

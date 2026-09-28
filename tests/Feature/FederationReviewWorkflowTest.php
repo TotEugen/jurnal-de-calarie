@@ -9,7 +9,7 @@ use Livewire\Livewire;
 
 test('requesting changes requires notes and records the decision history', function () {
     $federationUser = User::factory()->create();
-    $federationRole = Role::query()->create(['code' => 'federation', 'name' => 'Federație']);
+    $federationRole = Role::query()->create(['code' => 'federation', 'name' => 'Federatie']);
     $federationUser->roles()->attach($federationRole);
 
     $applicant = User::factory()->create();
@@ -18,7 +18,7 @@ test('requesting changes requires notes and records the decision history', funct
         'professional_profile_id' => $professional->id,
         'submitted_by' => $applicant->id,
         'status' => CenterApplicationStatus::Submitted,
-        'qualification_grade' => 'Monitor echitație',
+        'qualification_grade' => 'Monitor echitatie',
         'qualification_obtained_at' => '2025-01-15',
         'submitted_at' => now(),
     ]);
@@ -34,7 +34,7 @@ test('requesting changes requires notes and records the decision history', funct
     Livewire::test('pages::federation.review', [
         'type' => 'monitor',
         'applicationId' => $application->id,
-    ])->set('review_notes', 'Încărcați documentul care confirmă gradul declarat.')
+    ])->set('review_notes', 'Incarcati documentul care confirma gradul declarat.')
         ->call('decide', 'changes')
         ->assertHasNoErrors();
 
@@ -43,5 +43,5 @@ test('requesting changes requires notes and records the decision history', funct
     expect($application->status)->toBe(CenterApplicationStatus::ChangesRequested)
         ->and($application->statusHistory)->toHaveCount(1)
         ->and($application->statusHistory->first()->notes)
-        ->toBe('Încărcați documentul care confirmă gradul declarat.');
+        ->toBe('Incarcati documentul care confirma gradul declarat.');
 });
