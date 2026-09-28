@@ -15,7 +15,8 @@ class AuthenticationTest extends TestCase
     {
         $response = $this->get(route('login'));
 
-        $response->assertOk();
+        $response->assertOk()
+            ->assertSee(route('account.choose'), escape: false);
     }
 
     public function test_authentication_portal_lists_all_account_types(): void
