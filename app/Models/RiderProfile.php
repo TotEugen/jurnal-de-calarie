@@ -15,8 +15,10 @@ class RiderProfile extends Model
 
     protected $fillable = [
         'user_id', 'first_name', 'last_name', 'birth_date',
-        'phone', 'contact_email', 'self_reported_grade_id', 'national_registry_number', 'status',
-        'data_processing_consent_at', 'had_physical_journal', 'activated_at',
+        'phone', 'contact_email', 'emergency_contact_name', 'emergency_contact_phone',
+        'self_reported_grade_id', 'national_registry_number', 'status',
+        'data_processing_consent_at', 'had_physical_journal', 'physical_journal_issuing_center',
+        'physical_journal_series', 'physical_journal_rider_code', 'activated_at',
     ];
 
     protected function casts(): array
@@ -45,6 +47,12 @@ class RiderProfile extends Model
     public function activities(): HasMany
     {
         return $this->hasMany(RidingActivity::class);
+    }
+
+    /** @return HasMany<RiderSession, $this> */
+    public function sessions(): HasMany
+    {
+        return $this->hasMany(RiderSession::class);
     }
 
     /** @return HasMany<GradeAward, $this> */

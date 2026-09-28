@@ -27,6 +27,7 @@ class ProfileUpdateTest extends TestCase
         $response = Livewire::test('pages::settings.profile')
             ->set('name', 'Test User')
             ->set('email', 'test@example.com')
+            ->set('current_password', 'password')
             ->call('updateProfileInformation');
 
         $response->assertHasNoErrors();
@@ -36,6 +37,22 @@ class ProfileUpdateTest extends TestCase
         $this->assertEquals('Test User', $user->name);
         $this->assertEquals('test@example.com', $user->email);
         $this->assertNull($user->email_verified_at);
+    }
+
+    public function test_current_password_is_required_to_change_email_address(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user);
+
+        Livewire::test('pages::settings.profile')
+            ->set('name', $user->name)
+            ->set('email', 'email-nou@example.com')
+            ->set('current_password', 'parola-gresita')
+            ->call('updateProfileInformation')
+            ->assertHasErrors(['current_password']);
+
+        $this->assertNotSame('email-nou@example.com', $user->refresh()->email);
     }
 
     public function test_email_verification_status_is_unchanged_when_email_address_is_unchanged(): void

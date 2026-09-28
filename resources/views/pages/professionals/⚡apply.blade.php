@@ -48,7 +48,7 @@ new #[Layout('layouts.public'), Title('Cerere autorizare monitor')] class extend
         }
 
         $this->persist(CenterApplicationStatus::Draft);
-        Flux::toast(variant: 'success', text: 'Ciorna monitorului a fost salvată.');
+        Flux::toast(variant: 'success', text: 'Ciorna monitorului a fost salvata.');
     }
 
     public function submitApplication(): void
@@ -61,7 +61,7 @@ new #[Layout('layouts.public'), Title('Cerere autorizare monitor')] class extend
 
         $application = $this->persist(CenterApplicationStatus::Submitted);
         $application->update(['submitted_at' => now()]);
-        Flux::toast(variant: 'success', text: 'Cererea a fost transmisă Federației.');
+        Flux::toast(variant: 'success', text: 'Cererea a fost transmisa Federatiei.');
         $this->redirectRoute('dashboard', navigate: true);
     }
 
@@ -98,29 +98,29 @@ new #[Layout('layouts.public'), Title('Cerere autorizare monitor')] class extend
 <div class="mx-auto w-full max-w-5xl space-y-8">
     <header class="border-b border-zinc-200 pb-6 dark:border-zinc-700">
         <flux:heading size="xl">Cerere de autorizare monitor</flux:heading>
-        <flux:text class="mt-2 max-w-3xl">Completează informațiile profesionale care vor fi verificate de Federație.</flux:text>
+        <flux:text class="mt-2 max-w-3xl">Completeaza informatiile profesionale care vor fi verificate de Federatie.</flux:text>
     </header>
 
     @guest
         <section class="border-y border-zinc-200 py-10 dark:border-zinc-700">
-            <flux:heading size="lg">Autentificare necesară pentru trimitere</flux:heading>
-            <flux:text class="mt-2 max-w-2xl">Condițiile formularului sunt publice, iar dosarul profesional se salvează într-un cont securizat.</flux:text>
-            <div class="mt-5 flex gap-3"><flux:button :href="route('login')" variant="primary">Autentificare</flux:button><flux:button :href="route('register')">Creează cont</flux:button></div>
+            <flux:heading size="lg">Autentificare necesara pentru trimitere</flux:heading>
+            <flux:text class="mt-2 max-w-2xl">Conditiile formularului sunt publice, iar dosarul profesional se salveaza intr-un cont securizat.</flux:text>
+            <div class="mt-5 flex gap-3"><flux:button :href="route('login')" variant="primary">Mergi la autentificare</flux:button><flux:button :href="route('account.choose')">Creeaza cont</flux:button></div>
         </section>
     @else
     <form wire:submit="submitApplication" class="space-y-8">
         <div class="grid gap-5 md:grid-cols-2">
             <flux:input wire:model="qualification_grade" label="Grad / calificare" required />
             <flux:input wire:model="qualification_identifier" label="Identificator calificare" />
-            <flux:input wire:model="passport_number" label="Număr pașaport profesional" />
-            <flux:input wire:model="qualification_obtained_at" label="Data obținerii calificării" type="date" required />
-            <div class="md:col-span-2"><flux:input wire:model="issuing_authority" label="Instituția emitentă" /></div>
+            <flux:input wire:model="passport_number" label="Numar pasaport profesional" />
+            <flux:input wire:model="qualification_obtained_at" label="Data obtinerii calificarii" type="date" required />
+            <div class="md:col-span-2"><flux:input wire:model="issuing_authority" label="Institutia emitenta" /></div>
         </div>
-        <flux:checkbox wire:model="requests_evaluator_authorization" label="Solicit și autorizare ca evaluator" />
-        <flux:textarea wire:model="applicant_notes" label="Observații pentru Federație" rows="4" />
+        <flux:checkbox wire:model="requests_evaluator_authorization" label="Solicit si autorizare ca evaluator" />
+        <flux:textarea wire:model="applicant_notes" label="Observatii pentru Federatie" rows="4" />
         <div class="flex flex-col-reverse gap-3 border-t border-zinc-200 pt-6 sm:flex-row sm:justify-end dark:border-zinc-700">
-            <flux:button type="button" wire:click="saveDraft" variant="ghost">Salvează ciorna</flux:button>
-            <flux:button type="submit" variant="primary">Trimite către Federație</flux:button>
+            <flux:button type="button" wire:click="saveDraft" variant="ghost">Salveaza ciorna</flux:button>
+            <flux:button type="submit" variant="primary">Trimite catre Federatie</flux:button>
         </div>
     </form>
     @endguest

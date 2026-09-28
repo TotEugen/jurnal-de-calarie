@@ -13,7 +13,7 @@ test('only federation users can access the validation dashboard', function () {
         ->assertForbidden();
 
     $federationUser = User::factory()->create();
-    $federationRole = Role::query()->create(['code' => 'federation', 'name' => 'Federație']);
+    $federationRole = Role::query()->create(['code' => 'federation', 'name' => 'Federatie']);
     $federationUser->roles()->attach($federationRole);
 
     $this->actingAs($federationUser)
@@ -26,7 +26,7 @@ test('monitor privileges are granted only after federation approval', function (
     $this->actingAs($applicant);
 
     Livewire::test('pages::professionals.apply')
-        ->set('qualification_grade', 'Monitor echitație')
+        ->set('qualification_grade', 'Monitor echitatie')
         ->set('qualification_identifier', 'CAL-2026-001')
         ->set('passport_number', 'PAS-1001')
         ->set('qualification_obtained_at', '2025-06-15')
@@ -40,7 +40,7 @@ test('monitor privileges are granted only after federation approval', function (
     expect($application->status)->toBe(CenterApplicationStatus::Submitted);
 
     $federationUser = User::factory()->create();
-    $federationRole = Role::query()->create(['code' => 'federation', 'name' => 'Federație']);
+    $federationRole = Role::query()->create(['code' => 'federation', 'name' => 'Federatie']);
     $federationUser->roles()->attach($federationRole);
     $this->actingAs($federationUser);
 

@@ -1,11 +1,15 @@
 <x-layouts::auth :title="__('Log in')">
+    @php $guardianLogin = request('role') === 'guardian'; @endphp
     <div class="flex flex-col gap-6">
-        <x-auth-header :title="__('Log in to your account')" :description="__('Enter your email and password below to log in')" />
+        <x-auth-header
+            :title="$guardianLogin ? 'Autentificare tutore / parinte' : 'Autentificare calaret'"
+            :description="$guardianLogin ? 'Introdu emailul si parola contului folosit pentru administrarea minorului.' : 'Introdu emailul si parola contului tau de calaret.'"
+        />
+
+        <flux:link :href="route('account.choose')" class="text-sm" wire:navigate>← Creeaza un cont nou</flux:link>
 
         <!-- Session Status -->
         <x-auth-session-status class="text-center" :status="session('status')" />
-
-        <x-passkey-verify />
 
         <form method="POST" action="{{ route('login.store') }}" class="flex flex-col gap-6">
             @csrf
@@ -34,9 +38,9 @@
                     viewable
                 />
 
-                @if (Route::has('password.request'))
-                    <flux:link class="absolute top-0 text-sm end-0" :href="route('password.request')" wire:navigate>
-                        {{ __('Forgot your password?') }}
+                @if (Route::has('recovery.request'))
+                    <flux:link class="absolute top-0 text-sm end-0" :href="route('recovery.request')" wire:navigate>
+                        Ai uitat parola?
                     </flux:link>
                 @endif
             </div>
@@ -46,7 +50,7 @@
 
             <div class="flex items-center justify-end">
                 <flux:button variant="primary" type="submit" class="w-full" data-test="login-button">
-                    {{ __('Log in') }}
+                    Autentificare
                 </flux:button>
             </div>
         </form>

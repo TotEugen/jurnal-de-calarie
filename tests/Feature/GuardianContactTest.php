@@ -28,6 +28,8 @@ test('a guardian can add contact details to a managed rider', function () {
             'birth_date' => now()->subYears(15)->format('Y-m-d'),
             'phone' => '0712345678',
             'contact_email' => 'minor@example.com',
+            'emergency_contact_name' => 'Maria Popescu',
+            'emergency_contact_phone' => '0799999999',
         ])
         ->assertRedirect(route('guardian.dashboard'));
 
@@ -58,6 +60,11 @@ test('a rider can edit their own profile', function () {
             'phone' => '0711111111',
             'contact_email' => 'ion.nou@example.com',
             'had_physical_journal' => '1',
+            'physical_journal_issuing_center' => 'Club Ecvestru Transilvania',
+            'physical_journal_series' => 'B-2022',
+            'physical_journal_rider_code' => 'R-7788',
+            'emergency_contact_name' => 'Maria Ionescu',
+            'emergency_contact_phone' => '0799999999',
         ])
         ->assertRedirect(route('profile.edit'));
 
@@ -67,6 +74,11 @@ test('a rider can edit their own profile', function () {
         'phone' => '0711111111',
         'contact_email' => 'ion.nou@example.com',
         'had_physical_journal' => true,
+        'physical_journal_issuing_center' => 'Club Ecvestru Transilvania',
+        'physical_journal_series' => 'B-2022',
+        'physical_journal_rider_code' => 'R-7788',
+        'emergency_contact_name' => 'Maria Ionescu',
+        'emergency_contact_phone' => '0799999999',
     ]);
 });
 
@@ -85,6 +97,8 @@ test('a user cannot edit contact details for an unmanaged rider', function () {
             'birth_date' => now()->subYears(15)->format('Y-m-d'),
             'phone' => '0712345678',
             'contact_email' => 'minor@example.com',
+            'emergency_contact_name' => 'Maria Popescu',
+            'emergency_contact_phone' => '0799999999',
         ])
         ->assertForbidden();
 });

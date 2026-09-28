@@ -13,11 +13,11 @@ class RoleSeeder extends Seeder
     public function run(): void
     {
         $roles = [
-            'rider' => 'Călăreț',
-            'guardian' => 'Părinte / Tutore',
+            'rider' => 'Calaret',
+            'guardian' => 'Parinte / Tutore',
             'monitor' => 'Monitor',
-            'center' => 'Centru de echitație',
-            'federation' => 'Federație',
+            'center' => 'Centru de echitatie',
+            'federation' => 'Federatie',
         ];
 
         Role::query()->whereNotIn('code', array_keys($roles))->delete();

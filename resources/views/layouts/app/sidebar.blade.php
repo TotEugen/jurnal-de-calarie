@@ -11,13 +11,13 @@
             </flux:sidebar.header>
 
             <flux:sidebar.nav>
-                <flux:sidebar.group heading="Platformă" class="grid">
+                <flux:sidebar.group heading="Platforma" class="grid">
                     <flux:sidebar.item icon="home" :href="route('home')" :current="request()->routeIs('home')" wire:navigate>
                         Panou principal
                     </flux:sidebar.item>
                     @can('access-federation')
                         <flux:sidebar.item icon="building-library" :href="route('federation.applications')" :current="request()->routeIs('federation.applications')" wire:navigate>
-                            Panou Federație
+                            Panou Federatie
                         </flux:sidebar.item>
                     @endcan
                     @can('access-center')
@@ -27,7 +27,8 @@
                         <flux:sidebar.item icon="identification" :href="route('monitor.dashboard')" :current="request()->routeIs('monitor.dashboard')" wire:navigate>Panou Monitor</flux:sidebar.item>
                     @endcan
                     @can('access-rider')
-                        <flux:sidebar.item icon="user" :href="route('rider.dashboard')" :current="request()->routeIs('rider.dashboard')" wire:navigate>Panou Călăreț</flux:sidebar.item>
+                        <flux:sidebar.item icon="user" :href="route('rider.dashboard')" :current="request()->routeIs('rider.dashboard')" wire:navigate>Panou Calaret</flux:sidebar.item>
+                        <flux:sidebar.item icon="book-open" :href="route('rider.sessions')" :current="request()->routeIs('rider.sessions')" wire:navigate>Sesiunile mele</flux:sidebar.item>
                     @endcan
                 </flux:sidebar.group>
             </flux:sidebar.nav>

@@ -4,7 +4,9 @@ namespace Tests\Feature\Auth;
 
 use App\Models\Role;
 use App\Models\User;
+use App\Notifications\EmailVerificationCodeNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Notification;
 use Laravel\Fortify\Features;
 use Tests\TestCase;
 
@@ -24,12 +26,66 @@ class RegistrationTest extends TestCase
         $response = $this->get(route('register'));
 
         $response->assertOk()
-            ->assertSee('Creează cont călăreț')
-            ->assertSee('Anulează')
+            ->assertSee('Creeaza cont calaret')
+            ->assertSee('Nume persoana contact de urgenta')
+            ->assertSee('Telefon persoana contact de urgenta')
+            ->assertSee('Selecteaza centrul afiliat')
+            ->assertSee('Potcoava Mountain Hideaway')
+            ->assertSee('closePhysicalJournal()', escape: false)
+            ->assertSee('Esti sigur ca vrei sa parasesti formularul?')
+            ->assertSee('Toate datele completate pentru jurnalul fizic vor fi pierdute')
+            ->assertSee('Toate datele completate pentru tutore vor fi pierdute')
+            ->assertSee('closeGuardian()', escape: false)
+            ->assertSee('Anuleaza')
             ->assertSee(route('register.store'), escape: false);
     }
 
     public function test_new_users_can_register(): void
+    {
+        Notification::fake();
+
+        $response = $this->post(route('register.store'), [
+            'first_name' => 'Ion',
+            'last_name' => 'Popescu',
+            'birth_date' => '1995-04-12',
+            'phone' => '0712345678',
+            'email' => 'test@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+            'had_physical_journal' => '1',
+            'physical_journal_issuing_center' => 'Potcoava Mountain Hideaway',
+            'physical_journal_series' => 'CJ-2024',
+            'physical_journal_rider_code' => 'CAL-1234',
+            'emergency_contact_name' => 'Maria Popescu',
+            'emergency_contact_phone' => '0799999999',
+            'data_processing_consent' => '1',
+        ]);
+
+        $response->assertSessionHasNoErrors()
+            ->assertRedirect(route('verification.notice', absolute: false));
+
+        $this->assertAuthenticated();
+        $this->assertDatabaseHas('users', ['name' => 'Ion Popescu', 'email' => 'test@example.com']);
+        $this->assertDatabaseHas('rider_profiles', [
+            'first_name' => 'Ion',
+            'last_name' => 'Popescu',
+            'phone' => '0712345678',
+            'had_physical_journal' => true,
+            'physical_journal_issuing_center' => 'Potcoava Mountain Hideaway',
+            'physical_journal_series' => 'CJ-2024',
+            'physical_journal_rider_code' => 'CAL-1234',
+            'contact_email' => 'test@example.com',
+            'emergency_contact_name' => 'Maria Popescu',
+            'emergency_contact_phone' => '0799999999',
+        ]);
+        $this->assertDatabaseCount('guardian_relationships', 0);
+        Notification::assertSentTo(
+            User::query()->where('email', 'test@example.com')->firstOrFail(),
+            EmailVerificationCodeNotification::class,
+        );
+    }
+
+    public function test_physical_journal_details_are_required_when_the_option_is_selected(): void
     {
         $response = $this->post(route('register.store'), [
             'first_name' => 'Ion',
@@ -43,19 +99,28 @@ class RegistrationTest extends TestCase
             'data_processing_consent' => '1',
         ]);
 
-        $response->assertSessionHasNoErrors()
-            ->assertRedirect(route('dashboard', absolute: false));
+        $response->assertSessionHasErrors([
+            'physical_journal_issuing_center',
+            'physical_journal_series',
+            'physical_journal_rider_code',
+        ]);
+    }
 
-        $this->assertAuthenticated();
-        $this->assertDatabaseHas('users', ['name' => 'Ion Popescu', 'email' => 'test@example.com']);
-        $this->assertDatabaseHas('rider_profiles', [
+    public function test_personal_data_consent_is_required_to_create_an_account(): void
+    {
+        $response = $this->post(route('register.store'), [
             'first_name' => 'Ion',
             'last_name' => 'Popescu',
+            'birth_date' => '1995-04-12',
             'phone' => '0712345678',
-            'had_physical_journal' => true,
-            'contact_email' => 'test@example.com',
+            'email' => 'test@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
         ]);
-        $this->assertDatabaseCount('guardian_relationships', 0);
+
+        $response->assertSessionHasErrors('data_processing_consent');
+        $this->assertGuest();
+        $this->assertDatabaseCount('users', 0);
     }
 
     public function test_a_minor_must_provide_guardian_details(): void
@@ -82,6 +147,8 @@ class RegistrationTest extends TestCase
 
     public function test_a_minor_can_register_with_guardian_details(): void
     {
+        Notification::fake();
+
         $response = $this->post(route('register.store'), [
             'first_name' => 'Ana',
             'last_name' => 'Popescu',
@@ -94,11 +161,13 @@ class RegistrationTest extends TestCase
             'guardian_phone' => '0799999999',
             'guardian_email' => 'maria@example.com',
             'guardian_relationship' => 'parent',
+            'emergency_contact_name' => 'Ion Popescu',
+            'emergency_contact_phone' => '0711111111',
             'data_processing_consent' => '1',
         ]);
 
         $response->assertSessionHasNoErrors()
-            ->assertRedirect(route('dashboard', absolute: false));
+            ->assertRedirect(route('verification.notice', absolute: false));
 
         $this->assertAuthenticatedAs(User::query()->where('email', 'maria@example.com')->first());
         $this->assertDatabaseHas('rider_profiles', [
@@ -125,7 +194,7 @@ class RegistrationTest extends TestCase
             'email' => 'maria@example.com',
             'password' => 'password',
         ]);
-        $guardian->roles()->attach(Role::query()->create(['code' => 'rider', 'name' => 'Călăreț']));
+        $guardian->roles()->attach(Role::query()->create(['code' => 'rider', 'name' => 'Calaret']));
 
         $response = $this->post(route('register.store'), [
             'first_name' => 'Ana',
@@ -139,6 +208,8 @@ class RegistrationTest extends TestCase
             'guardian_phone' => '0799999999',
             'guardian_email' => 'maria@example.com',
             'guardian_relationship' => 'parent',
+            'emergency_contact_name' => 'Ion Popescu',
+            'emergency_contact_phone' => '0711111111',
             'data_processing_consent' => '1',
         ]);
 

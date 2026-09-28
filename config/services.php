@@ -35,4 +35,10 @@ return [
         ],
     ],
 
+    'sms' => [
+        'driver' => env('SMS_DRIVER', 'log'),
+        'webhook_url' => env('SMS_WEBHOOK_URL'),
+        'token' => env('SMS_TOKEN'),
+    ],
+
 ];

@@ -24,6 +24,7 @@ class ManagedRiderContactController extends Controller
         $this->ensureUserCanManage($request, $riderProfile);
 
         $isMinor = Carbon::parse($request->input('birth_date'))->age < 18;
+        $hadPhysicalJournal = $request->boolean('had_physical_journal');
 
         $validated = $request->validate([
             'first_name' => ['required', 'string', 'max:255'],
@@ -35,13 +36,24 @@ class ManagedRiderContactController extends Controller
                 'nullable',
                 'email',
                 'max:255',
-                Rule::unique(User::class, 'email'),
+                Rule::unique(User::class, 'email')->ignore($riderProfile->user_id),
                 Rule::unique(RiderProfile::class, 'contact_email')->ignore($riderProfile->id),
             ],
             'had_physical_journal' => ['nullable', 'boolean'],
+            'physical_journal_issuing_center' => [Rule::requiredIf($hadPhysicalJournal), 'nullable', 'string', Rule::in(config('frte.affiliated_centers'))],
+            'physical_journal_series' => [Rule::requiredIf($hadPhysicalJournal), 'nullable', 'string', 'max:100'],
+            'physical_journal_rider_code' => [Rule::requiredIf($hadPhysicalJournal), 'nullable', 'string', 'max:100'],
+            'emergency_contact_name' => ['required', 'string', 'max:255'],
+            'emergency_contact_phone' => ['required', 'string', 'max:30'],
         ]);
 
         $validated['had_physical_journal'] = $request->boolean('had_physical_journal');
+
+        if (! $hadPhysicalJournal) {
+            $validated['physical_journal_issuing_center'] = null;
+            $validated['physical_journal_series'] = null;
+            $validated['physical_journal_rider_code'] = null;
+        }
 
         $riderProfile->update($validated);
 
@@ -49,7 +61,7 @@ class ManagedRiderContactController extends Controller
             ? 'profile.edit'
             : 'guardian.dashboard';
 
-        return to_route($destination)->with('status', 'Profilul călărețului a fost actualizat.');
+        return to_route($destination)->with('status', 'Profilul calaretului a fost actualizat.');
     }
 
     private function ensureUserCanManage(Request $request, RiderProfile $riderProfile): void

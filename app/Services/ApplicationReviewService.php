@@ -94,14 +94,14 @@ class ApplicationReviewService
             'changes' => CenterApplicationStatus::ChangesRequested,
             'approve' => CenterApplicationStatus::Approved,
             'reject' => CenterApplicationStatus::Rejected,
-            default => throw new InvalidArgumentException('Decizie necunoscută.'),
+            default => throw new InvalidArgumentException('Decizie necunoscuta.'),
         };
     }
 
     private function validateNotes(string $decision, ?string $notes): void
     {
         if (in_array($decision, ['changes', 'reject'], true) && blank($notes)) {
-            throw new InvalidArgumentException('Observațiile sunt obligatorii pentru această decizie.');
+            throw new InvalidArgumentException('Observatiile sunt obligatorii pentru aceasta decizie.');
         }
     }
 

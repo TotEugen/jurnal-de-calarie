@@ -23,16 +23,23 @@
     --color-zinc-900: #171717;
     --color-zinc-950: #0a0a0a;
 
-    --color-accent: var(--color-neutral-800);
-    --color-accent-content: var(--color-neutral-800);
+    --color-accent: #155e45;
+    --color-accent-content: #155e45;
     --color-accent-foreground: var(--color-white);
+
+    --color-frte-forest: #155e45;
+    --color-frte-deep: #0b3d2e;
+    --color-frte-active: #197a56;
+    --color-frte-sage: #b8d7c2;
+    --color-frte-mint: #ddeee3;
+    --color-frte-paper: #f7f7f3;
 }
 
 @layer theme {
     .dark {
-        --color-accent: var(--color-white);
-        --color-accent-content: var(--color-white);
-        --color-accent-foreground: var(--color-neutral-800);
+        --color-accent: #b8d7c2;
+        --color-accent-content: #ddefe3;
+        --color-accent-foreground: #0b3d2e;
     }
 }
 
@@ -59,6 +66,65 @@ input:focus[data-flux-control],
 textarea:focus[data-flux-control],
 select:focus[data-flux-control] {
     @apply outline-hidden ring-2 ring-accent ring-offset-2 ring-offset-accent-foreground;
+}
+
+/* FRTE field palette: calm green surfaces with accessible light/dark contrast. */
+:where(input, textarea, select)[data-flux-control] {
+    background-color: #cde6d6 !important;
+    color: #17211c !important;
+    transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+:where(input, textarea, select)[data-flux-control]:not([data-invalid]) {
+    border-color: #9fc8ac !important;
+}
+
+:where(input, textarea, select)[data-flux-control]:focus {
+    background-color: #f7f7f3 !important;
+    border-color: #155e45 !important;
+}
+
+.dark :where(input, textarea, select)[data-flux-control] {
+    background-color: #1e3a2f !important;
+    color: #eef7f1 !important;
+}
+
+.dark :where(input, textarea, select)[data-flux-control]:not([data-invalid]) {
+    border-color: #38644f !important;
+}
+
+.dark :where(input, textarea, select)[data-flux-control]:focus {
+    background-color: #17231d !important;
+    border-color: #b8d7c2 !important;
+}
+
+[data-flux-sidebar] {
+    background-color: #f7f7f3 !important;
+}
+
+.dark [data-flux-sidebar] {
+    background-color: #17231d !important;
+    border-color: #38644f !important;
+}
+
+.settings-navigation [data-flux-navlist-item][data-current] {
+    background-color: #cde6d6 !important;
+    border-color: #b8d7c2 !important;
+    color: #0b3d2e !important;
+}
+
+.dark .settings-navigation [data-flux-navlist-item][data-current] {
+    background-color: #1e3a2f !important;
+    border-color: #38644f !important;
+    color: #ddefe3 !important;
+}
+
+.settings-content-section {
+    border-color: #d7e4da;
+}
+
+.dark .settings-content-section {
+    border-color: #38644f;
 }
 
 /* \[:where(&)\]:size-4 {
