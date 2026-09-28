@@ -77,7 +77,11 @@ class DashboardTest extends TestCase
 
     public function test_public_application_forms_are_visible_to_guests(): void
     {
-        $this->get(route('centers.apply'))->assertOk();
+        $this->get(route('centers.apply'))
+            ->assertOk()
+            ->assertSee('Denumire centru ecvestru')
+            ->assertSee('Cai si adapostire')
+            ->assertSee('Creeaza contul si trimite catre FRTE');
         $this->get(route('professionals.apply'))->assertOk();
     }
 

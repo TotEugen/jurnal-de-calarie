@@ -6,10 +6,13 @@ use App\Models\CenterApplication;
 use App\Models\CenterMembership;
 use App\Models\EquestrianCenter;
 use App\Models\Role;
+use App\Models\User;
 use Flux\Flux;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rules\Password;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -23,6 +26,10 @@ new #[Layout('layouts.public'), Title('Chestionar inscriere centru')] class exte
     public string $county = '';
     public string $locality = '';
     public string $applicant_notes = '';
+    public string $account_name = '';
+    public string $password = '';
+    public string $password_confirmation = '';
+    public bool $data_processing_consent = false;
 
     /** @var array<string, mixed> */
     public array $answers = [
@@ -62,9 +69,45 @@ new #[Layout('layouts.public'), Title('Chestionar inscriere centru')] class exte
 
     public function submitApplication(): void
     {
-        if (! $this->authenticate()) return;
-        $application = $this->persist(CenterApplicationStatus::Submitted);
-        $application->update(['submitted_at' => now()]);
+        $newUser = null;
+
+        if (! Auth::check()) {
+            $credentials = $this->validate([
+                'account_name' => ['required', 'string', 'max:255'],
+                'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+                'password' => ['required', 'confirmed', Password::defaults()],
+                'data_processing_consent' => ['accepted'],
+            ], [
+                'account_name.required' => 'Numele persoanei responsabile este obligatoriu.',
+                'data_processing_consent.accepted' => 'Acordul privind prelucrarea datelor este obligatoriu.',
+            ]);
+
+            $newUser = User::query()->create([
+                'name' => $credentials['account_name'],
+                'email' => $credentials['email'],
+                'password' => $credentials['password'],
+            ]);
+            Auth::login($newUser);
+        }
+
+        try {
+            $application = $this->persist(CenterApplicationStatus::Submitted);
+            $application->update(['submitted_at' => now()]);
+        } catch (\Throwable $exception) {
+            if ($newUser) {
+                Auth::logout();
+                $newUser->delete();
+            }
+            throw $exception;
+        }
+
+        if ($newUser) {
+            event(new Registered($newUser));
+            Flux::toast(variant: 'success', text: 'Contul a fost creat. Confirma codul primit pe email.');
+            $this->redirectRoute('verification.notice', navigate: true);
+            return;
+        }
+
         Flux::toast(variant: 'success', text: 'Chestionarul a fost transmis catre FRTE.');
         $this->redirectRoute('dashboard', navigate: true);
     }
@@ -147,10 +190,15 @@ new #[Layout('layouts.public'), Title('Chestionar inscriere centru')] class exte
         <flux:heading size="xl" class="mt-2 !text-white">Chestionar de inscriere centru ecvestru</flux:heading>
         <p class="mt-3 max-w-3xl text-emerald-50">Completeaza informatiile despre centru, cai, echipa, facilitati, servicii si siguranta.</p>
     </header>
-    @guest
-        <section class="rounded-2xl border border-emerald-200 bg-emerald-50 p-7 dark:border-emerald-900 dark:bg-emerald-950/40"><flux:heading size="lg">Autentificare necesara</flux:heading><flux:text class="mt-2">Completarea si urmarirea chestionarului se fac intr-un cont securizat.</flux:text><div class="mt-5 flex gap-3"><flux:button :href="route('login')" variant="primary">Mergi la autentificare</flux:button><flux:button :href="route('account.choose')">Creeaza cont</flux:button></div></section>
-    @else
-        <form wire:submit="submitApplication" class="space-y-8">
+    <form wire:submit="submitApplication" class="space-y-8">
+            @guest
+                <x-center-form-section title="Contul centrului" description="Datele folosite pentru autentificare si urmarirea solicitarii.">
+                    <flux:input wire:model="account_name" label="Persoana responsabila de cont (nume si prenume)" required />
+                    <div class="grid gap-5 md:grid-cols-2"><flux:input wire:model="password" label="Parola" type="password" autocomplete="new-password" viewable required /><flux:input wire:model="password_confirmation" label="Confirma parola" type="password" autocomplete="new-password" viewable required /></div>
+                    <flux:checkbox wire:model="data_processing_consent" label="Sunt de acord cu prelucrarea datelor personale." required />
+                    <flux:text>Ai deja cont? <flux:link :href="route('login')">Autentificare</flux:link></flux:text>
+                </x-center-form-section>
+            @endguest
             <x-center-form-section title="Datele centrului" description="Datele de identificare si contact ale centrului ecvestru.">
                 <div class="grid gap-5 md:grid-cols-2"><flux:input wire:model="legal_name" label="Denumire centru ecvestru" required /><flux:input wire:model="address" label="Adresa" required /><flux:input wire:model="phone" label="Telefon" type="tel" required /><flux:input wire:model="email" label="E-mail" type="email" required /><flux:input wire:model="website" label="Website" type="url" placeholder="https://" required /><flux:input wire:model="answers.facebook_page" label="Pagina de Facebook" type="url" placeholder="https://" required /><flux:input wire:model="answers.legal_representative" label="Reprezentant legal (Administrator, Manager, Proprietar)" required /><flux:input wire:model="answers.founded_year" label="Anul infiintarii" type="number" min="1800" :max="now()->year" required /></div>
                 <flux:textarea wire:model="answers.center_story" label="Scrieti pe scurt povestea centrului" rows="4" />
@@ -178,7 +226,6 @@ new #[Layout('layouts.public'), Title('Chestionar inscriere centru')] class exte
             <x-center-form-section title="Nevoi, asteptari si recomandari">
                 <flux:textarea wire:model="answers.needs_challenges" label="Principalele nevoi si provocari in domeniul ecvestru" rows="4" required /><flux:textarea wire:model="answers.frte_expectations" label="Asteptarile legate de activitatea Federatiei Romane de Turism Ecvestru" rows="4" required /><flux:textarea wire:model="answers.recommending_centers" label="Cele doua centre ecvestre membre FRTE care va recomanda" description="Scrieti denumirile ambelor centre." required /><div class="grid gap-5 md:grid-cols-2"><flux:input wire:model="answers.questionnaire_contact_name" label="Persoana care completeaza chestionarul (nume si prenume)" required /><flux:input wire:model="answers.questionnaire_contact_phone" label="Numar de telefon" type="tel" required /></div><flux:textarea wire:model="applicant_notes" label="Observatii suplimentare pentru FRTE" />
             </x-center-form-section>
-            <div class="flex flex-col-reverse gap-3 pb-10 sm:flex-row sm:justify-end"><flux:button type="button" wire:click="saveDraft" variant="ghost">Salveaza ciorna</flux:button><flux:button type="submit" variant="primary">Trimite catre FRTE</flux:button></div>
-        </form>
-    @endguest
+            <div class="flex flex-col-reverse gap-3 pb-10 sm:flex-row sm:justify-end">@auth<flux:button type="button" wire:click="saveDraft" variant="ghost">Salveaza ciorna</flux:button>@endauth<flux:button type="submit" variant="primary">@auth Trimite catre FRTE @else Creeaza contul si trimite catre FRTE @endauth</flux:button></div>
+    </form>
 </div>
